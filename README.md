@@ -44,6 +44,14 @@ module.exports = {
 
 Then run the command `react-native link` to automatically copy these assets to the `/android/app/src/main/assets/fonts` directory.
 
+Keep in mind that, in order to use `fontWeight:bold` and `fontStyle:italic` declarations, you'll need to rename your `.ttf` files accordingly:
+
+```text
+OpenSans_bold.ttf
+OpenSans_italic.ttf
+OpenSans_bold_italic.ttf
+```
+
 ## Using Styles
 
 On the topic of fonts, one annoying thing about React Native is that you can't set a global font style. You have to set the font on each individual `<Text>` component. This is why I found it helpful to create my own `<TextView>` component that does this for me.
@@ -53,7 +61,7 @@ For example:
 ```js
 const TextView = (props) => {
   return (
-    <Text {...props} style={[{fontFamily:"OpenSans-Regular"}, props.style]}>
+    <Text {...props} style={[{fontFamily:"OpenSans"}, props.style]}>
       {props.children}
     </Text>
   );

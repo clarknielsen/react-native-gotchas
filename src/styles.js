@@ -13,7 +13,7 @@ const perc = (x) => {
 export default StyleSheet.create({
   // main
   textView: {
-    fontFamily:"OpenSans-Regular", 
+    fontFamily:"OpenSans", 
     textAlign: "center",
     fontWeight: "bold",
     color: "white",
