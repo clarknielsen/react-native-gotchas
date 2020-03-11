@@ -28,6 +28,20 @@ I found it helpful to add a few new commands to the [package.json](./package.jso
 
   * Occasionally, my app would stop loading my changes, the reason being that my device had disconnected without me realizing it. A quick `adb devices` check will display which devices are still connected to your computer, if any.
 
+## Sound
+
+If you want to include sound effects or music in your app, the [react-native-sound npm package](https://github.com/zmxv/react-native-sound) is pretty solid. I won't go into detail on how to use it, since their documentation is straightforward enough. The "gotcha" that arises when using sound is that volume control is still tied to the phone ringer. If you want the device's volume buttons to actually change the app volume, you'll have to call a native `setVolumeControlStream()` method from within Java.
+
+Open the [MainActivity.java](./android/app/src/main/java/com/triviaquest/MainActivity.java) file located in your `android/app/src/main/java/*` directory and add the following override:
+
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+  super.onCreate(savedInstanceState);
+  this.setVolumeControlStream(AudioManager.STREAM_MUSIC);
+}
+```
+
 ## Custom Fonts
 
 If you want to use custom fonts in your app, you can include the `.ttf` files in your root directory somewhere (I put all of my files in a `src` directory). However, you'll need to update or create a [react-native.config.js](./react-native.config.js) file to look like this:
@@ -120,7 +134,7 @@ Fortunately, there's a great tool by GitHub user [romannurik](https://github.com
 
 ## Gradle Files
 
-Finally, there's the issue of building the darn thing. The React Native docs offer some guidance on [generating an upload key](https://facebook.github.io/react-native/docs/signed-apk-android), but their instructions leave a lot to be desired.
+Finally, there's the issue of building the darn thing. The React Native docs offer some guidance on [generating an upload key](https://facebook.github.io/react-native/docs/signed-apk-android), but their instructions on what to do with it afterwards leave a lot to be desired.
 
 Assuming you were able to generate a key, you'll still need to update your [build.gradle](./android/app/build.gradle) file located at `/android/app`. By default, there is only a `debug` option listed under `signingConfigs`. Update this section to look like the following:
 
@@ -158,7 +172,20 @@ buildTypes {
 
 One last thing to be aware of... Every time you want to upload a new version to Google Play, you have to update the `versionCode` in your app. Otherwise, Google Play won't accept it as a new version.
 
-This `versionCode` property is in the same `build.gradle` file, listed under `defaultConfig`. Just increment it by one each time you want to upload a new version of your app.
+This `versionCode` property is in the same `build.gradle` file, listed under `defaultConfig`. Just increment it by one each time you want to upload a new version of your app:
+
+```
+defaultConfig {
+  applicationId "com.triviaquest"
+  minSdkVersion rootProject.ext.minSdkVersion
+  targetSdkVersion rootProject.ext.targetSdkVersion
+  versionCode 2
+  versionName "1.0.1"
+  multiDexEnabled true
+}
+```
+
+The last line, `multiDexEnabled true`, isn't necessary, but I've found it helps prevent your app from constantly failing to start up in dev mode.
 
 _Good luck!_
 
